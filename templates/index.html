@@ -1,0 +1,115 @@
+{% extends "master.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="alert alert-info" role="alert" id="infoMsg">
+                Your file is getting processed. Please wait for a few minutes...
+            </div>
+            <div class="alert alert-success" role="alert" id="successMsg">
+                File uploaded successfully!
+            </div>
+            <div class="alert alert-danger" role="alert" id="failureMsg">
+                Something went wrong!
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <a href="/#" type="button" class="btn btn-block btn-secondary" id="viewDataBtn">
+                View your data
+            </a>
+        </div>
+
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Upload a File
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Choose a CSV file to upload:</label>
+                            <input type="file" name="file" class="form-control-file" id="file" accept=".csv">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required><br><br>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const uploadForm = document.getElementById('uploadForm');
+    let submitBtn = document.getElementById('submitBtn');
+    let successMsg = document.getElementById('successMsg');
+    let failureMsg = document.getElementById('failureMsg');
+    let viewDataBtn = document.getElementById('viewDataBtn');
+    let infoMsg = document.getElementById('infoMsg');
+
+    successMsg.style.display = 'none';
+    failureMsg.style.display = 'none';
+    viewDataBtn.style.display = 'none';
+    infoMsg.style.display = 'none';
+
+    uploadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        failureMsg.style.display = 'none';
+        submitBtn.setAttribute('disabled', 'disabled');
+        submitBtn.innerHTML = 'Uploading...';
+        infoMsg.style.display = 'block';
+        const formData = new FormData(uploadForm);
+
+        if (formData.get('file').name == '') {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.innerHTML = 'Upload';
+            infoMsg.style.display = 'none';
+            failureMsg.style.display = 'block';
+            failureMsg.innerHTML = 'Please select a file to upload!';
+            return;
+        }
+
+        if (formData.get('email').name == '') {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.innerHTML = 'Upload';
+            infoMsg.style.display = 'none';
+            failureMsg.style.display = 'block';
+            failureMsg.innerHTML = 'Please enter your email address!';
+            return;
+        }
+
+        fetch('/process', {
+            method: 'POST',
+            body: formData
+        }).then((response) => {
+            response.json().then((data) => {
+                console.log(data);
+                const viewDataLink = `${data.file_id}/uploads`;
+                viewDataBtn.style.display = 'block';
+                viewDataBtn.setAttribute('href', viewDataLink);
+                submitBtn.removeAttribute('disabled');
+                submitBtn.innerHTML = 'Upload';
+                successMsg.style.display = 'block';
+                failureMsg.style.display = 'none';
+                infoMsg.style.display = 'none';
+            })
+
+        }).catch((error) => {
+            console.log(error);
+            submitBtn.removeAttribute('disabled');
+            submitBtn.innerHTML = 'Upload';
+            successMsg.style.display = 'none';
+            failureMsg.style.display = 'block';
+            infoMsg.style.display = 'none';
+        });
+    });
+</script>
+
+{% endblock %}

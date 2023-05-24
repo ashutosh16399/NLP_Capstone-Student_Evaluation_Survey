@@ -1,0 +1,33 @@
+.comments-table__table {
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    width: 100%;
+  }
+  
+  .comments-table__table th,
+  .comments-table__table td {
+    padding: 12px;
+    text-align: left;
+  }
+  
+  .comments-table__table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    border: 1px solid #ddd;
+  }
+  
+  
+  .comments-table__table td {
+    border: 1px solid #ddd;
+  }
+  .comments-table__row--highlighted {
+    background-color: #38912c !important;
+  }  
+
+  .comments-table__table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .comments-table__table tr:nth-child(odd) {
+    background-color: #fff;
+  }

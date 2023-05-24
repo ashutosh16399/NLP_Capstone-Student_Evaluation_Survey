@@ -1,0 +1,82 @@
+{% extends "datatable_base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="btn btn-secondary" id="back">Go back</div>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4 mx-auto text-center" id="toTrain">
+            <button class="btn btn-primary btn-block" id="trainModel">Train your model</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron bg-transparent jumbotron-fluid">
+                <table id="csvData" class="display stripe hover cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Comments Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in csv %}
+                        <tr>
+                            {% for col in row %}
+                            <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#csvData').DataTable({
+
+            "scrollY": "400px",
+            "order": [
+                [0, "desc"]
+            ],
+
+        });
+    });
+</script>
+<script>
+    const trainModel = document.getElementById('trainModel');
+    const dataUrl = window.location.pathname;
+    const elements = dataUrl.split("/").filter(element => element !== "");
+    const csv_id = elements[elements.length - 2];
+    console.log("csv: " + csv_id);
+    trainModel.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch('/perform_model_task', {
+            method: 'POST', 
+            body: JSON.stringify({"csv": csv_id}), 
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        }).then(function(response){
+            if(response.ok){
+                window.location.href = '/email';
+            } else{
+                console.log('Error running task')
+            }
+        });
+    });
+    
+</script>
+
+<script>
+    const back = document.getElementById('back');
+    back.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.history.back();
+    })
+</script>
+{% endblock %}

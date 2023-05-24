@@ -1,0 +1,49 @@
+.jumping-emoji {
+  text-align: center;
+}
+
+.emoji1 {
+  display: inline-block;
+  width: 7rem;
+  height: 7rem;
+  background-image: url('/Users/ipsitgambhir/ses_what/src/positive.png'); /* Replace with the path to your emoji image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.5s ease-in-out;
+}
+
+.emoji3 {
+  display: inline-block;
+  width: 7rem;
+  height: 7rem;
+  background-image: url('/Users/ipsitgambhir/ses_what/src/negative.png'); /* Replace with the path to your emoji image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.5s ease-in-out;
+}
+
+.emoji2 {
+  display: inline-block;
+  width: 7.5rem;
+  height: 7.5rem;
+  background-image: url('/Users/ipsitgambhir/ses_what/src/neutral.png'); /* Replace with the path to your emoji image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.5s ease-in-out;
+}
+
+.jump-animation {
+  animation: jump 0.5s infinite alternate;
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5rem);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
