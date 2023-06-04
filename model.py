@@ -128,6 +128,7 @@ def split_comments_into_sentences(df):
         for sentence in sentences:
             new_row = row.copy()
             new_row['Data'] = sentence.strip()
+            new_row['OriginalC'] = comments.strip()
             new_rows.append(new_row)
 
     new_df = pd.DataFrame(new_rows)
