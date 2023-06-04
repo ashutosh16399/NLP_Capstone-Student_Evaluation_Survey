@@ -13,7 +13,7 @@ class DataHandler:
 
     def load_data(self):
         if os.path.exists(self.data_file):
-            with open(self.data_file, 'r') as f:
+            with open(self.data_file, 'r',encoding="utf8") as f:
                 try:
                     data = json.load(f)
                 except json.JSONDecodeError:
@@ -24,7 +24,7 @@ class DataHandler:
         return data
 
     def save_data(self):
-        with open(self.data_file, "w") as f:
+        with open(self.data_file, "w", encoding="utf8") as f:
             json.dump(self.data, f, indent=4)
 
     def add_csv_file(self, email_id, file):

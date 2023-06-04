@@ -18,7 +18,7 @@ def initialise_data_handler(base_path, data_file):
     fpath = os.path.join(base_path, data_file)
     if not os.path.isfile(fpath):
         # Create an empty file if it doesn't exist
-        with open(fpath, 'w') as f:
+        with open(fpath, 'w',encoding="utf8") as f:
             pass
     # Create an instance of the DataHandler class
     dh = DataHandler(fpath, base_path)
@@ -89,7 +89,7 @@ def view_data(file_id):
     if not os.path.exists(csv_file):
         abort(404, "File not found")
 
-    with open(csv_file, "r") as f:
+    with open(csv_file, "r", encoding="utf8") as f:
         reader = csv.reader(f)
         return render_template("data.html", csv=reader)
 
@@ -103,7 +103,7 @@ def display_result(file_id):
     if not os.path.exists(csv_file):
         abort(404, "File not found")
 
-    with open(csv_file, "r") as f:
+    with open(csv_file, "r",encoding="utf8") as f:
         reader = csv.reader(f)
         csv_data = list(reader)
 
@@ -193,5 +193,5 @@ def server_error(e):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
