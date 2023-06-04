@@ -96,9 +96,10 @@ def clean_text(text):
     text=re.sub('[^a-z]',' ',text)
     return text
 
-def call_all(XYZ):
+def call_all(XYZ,custom_stop_words=["student", "students",'makes','make']):
   combined_data=XYZ
-  custom_stop_words = ["student", "students",'makes','make']
+  custom_stop_words=[x.lower() for x in custom_stop_words]
+  print(custom_stop_words)
   combined_data=combined_data.apply(lambda x:x.lower())
   combined_data=combined_data.apply(lambda x:contractions.fix(x))
   combined_data=combined_data.apply(lambda x: clean_text(x))
@@ -116,6 +117,22 @@ def call_all(XYZ):
   combined_training = apply_tfidf_filter(combined_training, stopwords=['the', 'and'], max_features=1000, min_df=2, max_df=0.8)
   #display(combined_training.to_string())
   return combined_training
+
+
+def split_comments_into_sentences(df):
+    new_rows = []
+    for index, row in df.iterrows():
+        comments = row['Data']
+        sentences = nltk.sent_tokenize(comments)
+
+        for sentence in sentences:
+            new_row = row.copy()
+            new_row['Data'] = sentence.strip()
+            new_rows.append(new_row)
+
+    new_df = pd.DataFrame(new_rows)
+    new_df.reset_index(drop=True, inplace=True)
+    return new_df
 
 def get_embedding_w2v_pre(doc_tokens):
     embeddings = []
@@ -183,10 +200,12 @@ def evaluate_clustering(X, k, data, dictionary,activate=True,km_up=None,labels_u
 
     return coherence_score, silhouette_sco, km, labels
     
-def find_best_pram(vectors_scaled,data,up):
+def find_best_pram(vectors_scaled,data,up,sub=False):
   # Create a dictionary from the text data
   dictionary = Dictionary([doc.split() for doc in data])
-  k_range = [i for i in range(2, up)]
+  k_range = [i for i in range(5, up)]
+  if sub:
+    k_range = [i for i in range(2, up)]
 
   # Initialize lists to store the results
   coherence_scores = []
@@ -277,14 +296,16 @@ def test_score(vectors_scaled,df,k,cluster,labels):
 def nos_to_cluster(i,lab_names):
   return lab_names[i]
 
-def Topic_clustering(df):
-  df['Cleaned']=call_all(df['Data'])
+def Topic_clustering(df,Stop_data):
+  datafr1=df[df['Data'].notna()]
+  df=split_comments_into_sentences(datafr1)
+  df['Cleaned']=call_all(df['Data'],Stop_data[0])
   vec=get_vectors(df['Cleaned'])
   #vectors_scaled = StandardScaler().fit_transform([x for x in vec])
   vectors_scaled = [x for x in vec]
   #pca = PCA(n_components=70)
   #vectors_scaled = pca.fit_transform(vectors_scaled)
-  df['Vectors']=vec
+  #df['Vectors']=vec
   n_clus, clustering, cluster_labels=find_best_pram(vectors_scaled,df['Cleaned'],25)
   print("Estimated number of clusters: %d" % n_clus)
   test_score(vectors_scaled,df,n_clus,clustering, cluster_labels)
@@ -335,7 +356,7 @@ def sub_Topic_clustering(df):
   if max_up>15:
     max_up=15
   print(max_up)
-  n_clus, clustering, cluster_labels=find_best_pram(vectors_scaled,df['sub_cleaned'],max_up)
+  n_clus, clustering, cluster_labels=find_best_pram(vectors_scaled,df['sub_cleaned'],max_up,sub=True)
   print("Estimated number of clusters: %d" % n_clus)
   test_score(vectors_scaled,df,n_clus,clustering, cluster_labels)
   df["sub_cluster"] = cluster_labels
@@ -359,7 +380,7 @@ def sub_call(df):
 
   # Concatenate the results into a single dataframe
   output_df = pd.concat(results)
-  output_df=output_df[['Data','Cleaned','sub_cleaned','cluster','Topic_names','sub_cluster','sub_Topic_names']]
+  #output_df=output_df[['Data','Cleaned','sub_cleaned','cluster','Topic_names','sub_cluster','sub_Topic_names']]
 
   return output_df
 
@@ -402,14 +423,12 @@ def find_sentiment(text):
   #print(jk,labels[jk])
   return labels[jk]
 
-def call_everything(datafr):
-  datafr=Topic_clustering(datafr)
+def call_everything(datafr,Stop_data):
+  datafr=Topic_clustering(datafr,Stop_data)
   datafr=sub_call(datafr)
-  dffinal=pd.DataFrame()
-  dffinal['Comments']=datafr['Data']
-  dffinal['Topics']=datafr['Topic_names']
-  dffinal['SubTopics']=datafr['sub_Topic_names']
-  dffinal['Sentiment']=dffinal['Comments'].apply(lambda x: find_sentiment(x))
-  return dffinal
+  datafr.drop(['Cleaned', 'sub_cleaned','cluster','sub_cluster'], axis=1,inplace=True)
+  datafr.rename({'Data': 'Comments', 'Topic_names': 'Topics','sub_Topic_names':'SubTopics'}, axis=1, inplace=True)
+  datafr['Sentiment']=datafr['Comments'].apply(lambda x: find_sentiment(x))
+  return datafr
 
 
