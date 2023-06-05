@@ -118,7 +118,7 @@ def long_running_task(email, csv_id):
 
     try:
         df = pd.read_csv(file_path)  # Specify the engine as 'openpyxl'
-        file_s = open(r"C:\Users\Ashut\Desktop\projects\UCI Capstone\CapstoneServer\Stopwords.csv", "r")
+        file_s = open(r"Stopwords.csv", "r")
         Stop_data = list(csv.reader(file_s, delimiter=","))
         file_s.close()
         df = model.call_everything(df,Stop_data)
