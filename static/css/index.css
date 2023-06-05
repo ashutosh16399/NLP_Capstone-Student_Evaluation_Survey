@@ -1,13 +1,64 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-image: url("static/images/What.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: black;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.card-body {
+  background-color: #010b15;
+  margin-top: 100px;
+}
+
+.file-input-wrapper,
+.email-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.file-input-wrapper input[type="file"],
+.email-input-wrapper input[type="email"] {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.file-input-label,
+.email-input-wrapper input[type="email"] {
+  color: #f1f9f8;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #f1f9f8;
+  padding: 10px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 8px 15px;
+  border: 1px solid #417bcc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file-input-label:hover {
+  background-color: #417bcc;
+  border-color: #417bcc;
+}
+
+/* Additional styling for the button */
+#submitBtn {
+  background-color: #5889ca;
+  color: #f1f9f8;
+}
+
+#submitBtn:hover {
+  background-color: #417bcc;
 }

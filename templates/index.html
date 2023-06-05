@@ -1,17 +1,44 @@
 {% extends "master.html" %}
 {% block content %}
 
+<link rel="stylesheet" type="text/css" href="static/css/index.css">
+
+<style>
+    body {
+        background-image: url("static/images/What.png");
+        background-size: 100% 105%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .card-header {
+        background-color: #010b15;
+        font-weight: bold;
+        color: #f1f9f8;
+    }
+
+    .card-body {
+        background-color: #5889ca;
+        margin-top: 1px;
+    }
+
+    label {
+        font-weight: bold;
+        color: #eef4ef;
+    }
+</style>
+
 <div class="container">
     <div class="row">
         <div class="col-md-8 mx-auto">
             <div class="alert alert-info" role="alert" id="infoMsg">
-                Your file is getting processed. Please wait for a few minutes...
+                Your file is being processed. Please wait for a few minutes...
             </div>
             <div class="alert alert-success" role="alert" id="successMsg">
                 File uploaded successfully!
             </div>
             <div class="alert alert-danger" role="alert" id="failureMsg">
-                Something went wrong!
+                Oops! Something went wrong.
             </div>
         </div>
     </div>
@@ -21,23 +48,26 @@
                 View your data
             </a>
         </div>
-
     </div>
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    Upload a File
+                    <h3 class="text-center">Upload a File</h3>
                 </div>
                 <div class="card-body">
                     <form id="uploadForm" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="file">Choose a CSV file to upload:</label>
                             <input type="file" name="file" class="form-control-file" id="file" accept=".csv">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" required><br><br>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Upload</button>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Upload</button>
+                        </div>
                     </form>
                 </div>
             </div>
